@@ -1,4 +1,4 @@
-#include "linked_list.h"
+#include "../linked_list.h"
 
 void print_float(float value) {
 	printf("%f ", value);
