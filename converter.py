@@ -45,7 +45,7 @@ def main() -> None:
         print(f"An error occurred: {e}")
         
     
-    header_name = destination.split(".")[0].upper()
+    header_name = destination.split('/')[-1].split(".")[0].upper()
 
     outfile.write(f"#ifndef {header_name}\n")
     outfile.write(f"#define {header_name}\n")

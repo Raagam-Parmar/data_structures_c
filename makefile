@@ -1,8 +1,8 @@
-.PHONY: all linked_list stack queue queue_linked_list
+.PHONY: all linked_list stack queue queue_linked_list priority_queue
 
-all: linked_list stack queue queue_linked_list
+all: linked_list stack queue queue_linked_list priority_queue
 
-clean: clean_linked_list clean_stack clean_queue clean_queue_linked_list
+clean: clean_linked_list clean_stack clean_queue clean_queue_linked_list clean_priority_queue
 
 
 linked_list:
@@ -31,3 +31,11 @@ queue_linked_list:
 
 clean_queue_linked_list:
 	rm -f queue/queue_linked_list.h
+
+
+priority_queue:
+	python3 converter.py priority_queue/int_priority_queue.h
+
+clean_priority_queue:
+	rm -f priority_queue/priority_queue.h
+	

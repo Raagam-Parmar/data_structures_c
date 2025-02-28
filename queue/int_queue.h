@@ -17,7 +17,7 @@ typedef int __int;
 
 
 typedef struct __int_node {
-    int self;
+    __int self;
     struct __int_node *next;
 } __int_node;
 
