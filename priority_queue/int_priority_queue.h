@@ -13,7 +13,7 @@ void unit_print(int v) {
 
 typedef int __int;
 
-int compare(int a, int b) {
+int unit_compare(int a, int b) {
     if (a < b) return -1;
     if (a > b) return 1;
     return 0;
@@ -28,19 +28,27 @@ typedef struct __int_node {
 
 
 typedef struct __int_queue { 
-    __int_node *head; 
+    __int_node *head;
+    int (* unit_compare) (__int, __int);
 } __int_queue; 
 
 
-__int_queue * __int_queue_create() { 
+__int_queue * __int_queue_create(int (*unit_compare) (__int, __int)) { 
     __int_queue *queue = (__int_queue *) malloc(sizeof(__int_queue)); 
 
     if (! queue) return NULL; 
 
-    queue -> head = NULL; 
+    queue -> head = NULL;
+    queue -> unit_compare = unit_compare;
 
     return queue; 
 } 
+
+
+int __int_queue_is_empty(__int_queue queue) {
+    if (queue.head == NULL) return 1;
+    return 0;
+}
 
 
 int __int_queue_enqueue(__int_queue *queue, __int value) { 
@@ -60,7 +68,7 @@ int __int_queue_enqueue(__int_queue *queue, __int value) {
         return SUCCESS_ERROR_CODE; 
     } 
 
-    if (compare(value, queue -> head -> self) < 0) { 
+    if (queue -> unit_compare(value, queue -> head -> self) < 0) { 
         /* value < head value */ 
         new_node -> next = queue -> head; 
         queue -> head = new_node; 
@@ -83,7 +91,7 @@ int __int_queue_enqueue(__int_queue *queue, __int value) {
             break; 
         } 
 
-        if (compare(value, traverser_n -> self) < 0) { 
+        if (queue -> unit_compare(value, traverser_n -> self) < 0) { 
             break; 
         } 
 
@@ -115,21 +123,89 @@ int __int_queue_dequeue(__int_queue *queue, __int *dequeued) {
 } 
 
 
-int __int_queue_print(__int_queue queue) { 
+int __int_queue_peek(__int_queue *queue, __int *peek) {
+    if (queue == NULL) return NULL_ARG_ERROR_CODE;
+
+    if (queue -> head == NULL) return UNDERFLOW_ERROR_CODE;
+
+    *peek = queue -> head -> self;
+
+    return SUCCESS_ERROR_CODE;
+}
+
+
+int __int_queue_map(__int_queue *queue, __int (* map) (__int)) {
+    if (queue == NULL) return NULL_ARG_ERROR_CODE;
+
+    __int_node *traverser = queue -> head;
+
+    while (traverser != NULL) {
+        traverser -> self = map(traverser -> self);
+
+        traverser = traverser -> next;
+    }
+
+    return SUCCESS_ERROR_CODE;
+}
+
+
+int __int_queue_modify(__int_queue *queue, void (* modify) (__int *)) {
+    if (queue == NULL) return NULL_ARG_ERROR_CODE;
+
+    __int_node *traverser = queue -> head;
+
+    while (traverser != NULL) {
+        modify(& (traverser -> self) );
+
+        traverser = traverser -> next;
+    }
+
+    return SUCCESS_ERROR_CODE;
+}
+
+
+int __int_queue_iterate(__int_queue *queue, void (* apply) (__int)) {
+    if (queue == NULL) return NULL_ARG_ERROR_CODE;
+
+    __int_node *traverser = queue -> head;
+
+    while (traverser != NULL) {
+        apply(traverser -> self);
+
+        traverser = traverser -> next;
+    }
+
+    return SUCCESS_ERROR_CODE;
+}
+
+
+int __int_queue_print(__int_queue queue) {
+    __int_queue_iterate(&queue, unit_print);
+    printf("\n");
+
+    return  SUCCESS_ERROR_CODE;
+}
+
+
+int __int_queue_pretty_print(__int_queue queue) {
     if (queue.head == NULL) return SUCCESS_ERROR_CODE; 
 
-    __int_node *traverser = queue.head; 
+    __int_node *traverser = queue.head;
+
+    printf("+=======================+\n");
 
     while (traverser != NULL) { 
         unit_print(traverser -> self); 
+        if (traverser -> next != NULL) printf("+-----------------------+\n");
 
         traverser = traverser -> next; 
-    } 
+    }
 
+    printf("+=======================+\n");
     printf("\n"); 
 
     return SUCCESS_ERROR_CODE; 
-} 
+}
 
 
 int __int_queue_destroy(__int_queue *queue) { 
