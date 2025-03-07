@@ -86,7 +86,7 @@ def main() -> None:
         if line == "\n":
             macro += "\\\n"
         else:    
-            macro += f"{line.replace('__int ', 'type ').replace('__int_', 'type##_').rstrip()} \\\n"
+            macro += f"{line.replace('__int ', 'type ').replace('__int_', 'type##_').rstrip().replace('__int', 'type')} \\\n"
             
         outfile.write(macro)
                         
