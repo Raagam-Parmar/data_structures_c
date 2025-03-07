@@ -57,7 +57,7 @@ def main() -> None:
             ignore = False
             
             macro = ""
-            macro += f"#define GENERATE_{header_name.upper()}(type, unit_print) \\\n"
+            macro += f"#define GENERATE_{header_name.upper()}(type) \\\n"
             
             outfile.write(macro)
 
