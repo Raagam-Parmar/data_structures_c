@@ -15,8 +15,6 @@ typedef int __int;
 
 typedef int  (* compare) (__int, __int);
 typedef void (* printer) (__int);
-typedef int  (* mprinter) (__int);
-
 
 typedef struct __int_node { 
     __int               self; 
@@ -27,8 +25,8 @@ typedef struct __int_node {
 typedef struct __int_pq { 
     __int_node * head;
     size_t       length;
-    compare cmp;
-    printer prt;
+    compare      cmp;
+    printer      prt;
 } __int_pq; 
 
 
@@ -195,45 +193,6 @@ int __int_pq_print(const __int_pq * queue, printer prt) {
     printf("\n");
 
     return SUCCESS_ERROR_CODE;
-}
-
-
-int __int_pq_pprint(const __int_pq * queue, printer prt, mprinter mprt, __u_int margin) {
-    if (queue == NULL) return NULL_ARG_ERROR_CODE;
-    if (prt == NULL) prt = queue -> prt;
-
-    int width = 0;
-    
-    __int_node * traverser = queue -> head;
-    while (traverser != NULL) {
-        int w = mprt(traverser -> self);
-        if (w > width) width = w;
-
-        traverser = traverser -> next;
-    }
-
-    printf("+");
-    for (__u_int i = 0; i < margin + width + margin; i++) printf("=");
-    printf("+\n");
-    
-    traverser = queue -> head;
-    while (traverser != NULL) { 
-        prt(traverser -> self); 
-
-        if (traverser -> next != NULL) {
-            printf("+");
-            for (__u_int i = 0; i < margin + width + margin; i++) printf("-");
-            printf("+\n");
-        }
-
-        traverser = traverser -> next; 
-    }
-
-    printf("+");
-    for (__u_int i = 0; i < margin + width + margin; i++) printf("=");
-    printf("+\n");
-
-    return SUCCESS_ERROR_CODE; 
 }
 
 
