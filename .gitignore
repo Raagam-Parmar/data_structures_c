@@ -1,5 +1,12 @@
 .vscode/
-Todo/
-Archives/
-test*.*
 .obsidian/
+
+Archives/
+
+*test*.*
+*test*
+*temp*.*
+*temp*
+
+Todo/
+TODO.md
