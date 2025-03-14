@@ -19,13 +19,13 @@ typedef void (* printer) (__t);
  * 
  */
 typedef struct __t_node {
-    __t              self;
-    struct __t_node *next;
+    __t              self;  /**< The object */
+    struct __t_node *next;  /**< Pointer to the next node */
 } __t_node;
 
 
 /**
- * @brief Stores a list of objects as a FIFO queue
+ * @brief Stores objects as a FIFO queue
  * 
  */
 typedef struct __t_q {
@@ -130,7 +130,7 @@ int __t_q_deq(__t_q *queue, __t *dequeued) {
 
 
 /**
- * @brief Print  out the queue in the order of addition
+ * @brief Print out the queue in the order of addition
  * 
  * @param queue Queue
  * @return Error Code
@@ -143,7 +143,7 @@ int __t_q_print(const __t_q *queue) {
 
     while (traverser != NULL) {
         int value = traverser -> self;
-        unit_print(value);
+        queue -> prt(value);
         
         traverser = traverser -> next;
     }
