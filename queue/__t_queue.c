@@ -133,17 +133,20 @@ int __t_q_deq(__t_q *queue, __t *dequeued) {
  * @brief Print out the queue in the order of addition
  * 
  * @param queue Queue
+ * @param Printer Optional Print Function (NULL to use the default print function `queue.prt`)
  * @return Error Code
  * @ref error_code
  */
-int __t_q_print(const __t_q *queue) {
+int __t_q_print(const __t_q *queue, printer prt) {
     if (queue == NULL) return NULL_ARG_ERROR_CODE;
+    
+    if (prt == NULL) prt = queue -> prt;
 
     __t_node *traverser = queue -> tail;
 
     while (traverser != NULL) {
         int value = traverser -> self;
-        queue -> prt(value);
+        prt(value);
         
         traverser = traverser -> next;
     }

@@ -48,6 +48,12 @@ typedef enum __error_code {
 } error_code;
 
 
+/**
+ * @brief Creates an empty stack
+ * 
+ * @param prt Print function (non-NULL)
+ * @return Pointer to the new stack; NULL on failure
+ */
 __t_stk * __t_stk_create(printer prt) {
     if (prt == NULL) return NULL;
 
@@ -131,12 +137,14 @@ int __t_stk_pop(__t_stk *stack, __t *popped) {
  * @return Error Code
  * @ref error_code
  */
-int __t_stk_print_helper(__t_node *node) {
+int __t_stk_print_helper(__t_node *node, printer prt) {
+    if (prt == NULL) return NULL_FUNC_ERROR_CODE;
+
     if (node == NULL) return SUCCESS_ERROR_CODE;
 
-    __t_stk_print_helper(node -> next);
+    __t_stk_print_helper(node -> next, prt);
 
-    unit_print(node -> self);
+    prt(node -> self);
 
     return SUCCESS_ERROR_CODE;
 }
@@ -146,13 +154,16 @@ int __t_stk_print_helper(__t_node *node) {
  * @brief Print the stack in order of least to most recently added
  * 
  * @param stack Stack
+ * @param printer Optional Print Function (NULL to use the default print function `stack.prt`)
  * @return Error Code
  * @ref error_code
  */
-int __t_stk_print(const __t_stk * stack) {
+int __t_stk_print(const __t_stk * stack, printer prt) {
     if (stack == NULL) return NULL_ARG_ERROR_CODE;
+    
+    if (prt == NULL) prt = stack -> prt;
 
-    __t_stk_print_helper(stack -> top);
+    __t_stk_print_helper(stack -> top, prt);
     printf("\n");
 
     return SUCCESS_ERROR_CODE;
