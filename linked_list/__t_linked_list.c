@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "ll_error_codes.h"
+
 // arg-begin
 // Anything inside this will be ignored by the Converter file.
 
@@ -11,7 +13,7 @@ typedef int __t;
  * @brief Prints the given object
  * 
  */
-typedef void (* printer) (__t);
+typedef void (* __t_printer) (__t);
 
 
 /**
@@ -29,23 +31,10 @@ typedef struct __t_node {
  * 
  */
 typedef struct __t_ll {
-    __t_node *head;     /**< The head of the linked list */
-    size_t    length;   /**< The length of the linked list */
-    printer   prt;      /**< The print function to print objects */
+    __t_node *   head;      /**< The head of the linked list */
+    size_t       length;    /**< The length of the linked list */
+    __t_printer  prt;       /**< The print function to print objects */
 } __t_ll;
-
-
-/**
- * @brief Error codes
- * 
- */
-typedef enum __error_code {
-    NULL_FUNC_ERROR_CODE = -4,  /**< Unexpected NULL passed as a function pointer */
-    UNDERFLOW_ERROR_CODE = -3,  /**< Priority Queue is empty */
-    NULL_ARG_ERROR_CODE  = -2,  /**< Received unexpected NULL as an argument */
-    MALLOC_ERROR_CODE    = -1,  /**< Failure of malloc to allocate memory */
-    SUCCESS_ERROR_CODE   = 0    /**< Successful execution */
-} error_code;
 
 
 /**
@@ -54,7 +43,7 @@ typedef enum __error_code {
  * @param prt Print function (non-NULL)
  * @return Pointer to a new linked list, NULL on failure
  */
-__t_ll * __t_ll_create(printer prt) {
+__t_ll * __t_ll_create(__t_printer prt) {
     if (prt == NULL) return NULL;
 
     __t_ll *list = (__t_ll *) malloc(sizeof(__t_ll));
@@ -77,7 +66,7 @@ __t_ll * __t_ll_create(printer prt) {
  * @ref error_code
  */
 size_t __t_ll_size(const __t_ll * list) {
-    if (list == NULL) return NULL_ARG_ERROR_CODE;
+    if (list == NULL) return LL_NULL_ARG;
     
     return list -> length;
 }
@@ -91,8 +80,8 @@ size_t __t_ll_size(const __t_ll * list) {
  * @return Error Code
  * @ref error_code
  */
-int __t_ll_print(const __t_ll * list, printer prt) {
-    if (list -> head == NULL) return NULL_ARG_ERROR_CODE;
+int __t_ll_print(const __t_ll * list, __t_printer prt) {
+    if (list -> head == NULL) return LL_NULL_ARG;
 
     if (prt == NULL) prt = list -> prt;
 
@@ -104,7 +93,7 @@ int __t_ll_print(const __t_ll * list, printer prt) {
     }
     printf("\n");
 
-    return SUCCESS_ERROR_CODE;
+    return LL_SUCCESS;
 }
 
 
@@ -117,7 +106,7 @@ int __t_ll_print(const __t_ll * list, printer prt) {
  * @ref error_code
  */
 int __t_ll_free(__t_ll **list) {
-    if (list == NULL || *list == NULL) return SUCCESS_ERROR_CODE;
+    if (list == NULL || *list == NULL) return LL_SUCCESS;
 
     while ((*list) -> head != NULL) {
         __t_node *trash = (*list) -> head;
@@ -131,5 +120,5 @@ int __t_ll_free(__t_ll **list) {
 
     *list = NULL;
 
-    return SUCCESS_ERROR_CODE;
+    return LL_SUCCESS;
 }

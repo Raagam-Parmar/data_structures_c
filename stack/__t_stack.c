@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "stack_error_codes.h"
+
 // arg-begin
 // Anything inside this will be ignored by the Converter file.
 
@@ -11,7 +13,7 @@ typedef int __t;
  * @brief Prints the given object
  * 
  */
-typedef void (* printer) (__t);
+typedef void (* __t_printer) (__t);
 
 
 /**
@@ -29,23 +31,10 @@ typedef struct __t_node {
  * 
  */
 typedef struct __t_stk {
-    __t_node *top;      /**< The top of the stack */
-    size_t    length;   /**< The length of the stack */
-    printer   prt;      /**< The print function to print objects */
+    __t_node *   top;       /**< The top of the stack */
+    size_t       length;    /**< The length of the stack */
+    __t_printer  prt;       /**< The print function to print objects */
 } __t_stk;
-
-
-/**
- * @brief Error codes
- * 
- */
-typedef enum __error_code {
-    NULL_FUNC_ERROR_CODE = -4,  /**< Unexpected NULL passed as a function pointer */
-    UNDERFLOW_ERROR_CODE = -3,  /**< Queue is empty */
-    NULL_ARG_ERROR_CODE  = -2,  /**< Received unexpected NULL as an argument */
-    MALLOC_ERROR_CODE    = -1,  /**< Failure of malloc to allocate memory */
-    SUCCESS_ERROR_CODE   = 0    /**< Successful execution */
-} error_code;
 
 
 /**
@@ -54,7 +43,7 @@ typedef enum __error_code {
  * @param prt Print function (non-NULL)
  * @return Pointer to the new stack; NULL on failure
  */
-__t_stk * __t_stk_create(printer prt) {
+__t_stk * __t_stk_create(__t_printer prt) {
     if (prt == NULL) return NULL;
 
     __t_stk *stack = (__t_stk *) malloc(sizeof(__t_stk));
@@ -77,7 +66,7 @@ __t_stk * __t_stk_create(printer prt) {
  * @ref error_code
  */
 size_t __t_stack_size(const __t_stk * stack) {
-    if (stack == NULL) return NULL_ARG_ERROR_CODE;
+    if (stack == NULL) return STACK_NULL_ARG;
 
     return stack -> length;
 }
@@ -92,17 +81,17 @@ size_t __t_stack_size(const __t_stk * stack) {
  * @ref error_code
  */
 int __t_stk_push(__t_stk *stack, __t value) {
-    if (stack == NULL) return NULL_ARG_ERROR_CODE;
+    if (stack == NULL) return STACK_NULL_ARG;
 
     __t_node *new_node = (__t_node *) malloc(sizeof(__t_node));
 
-    if (! new_node) return MALLOC_ERROR_CODE;
+    if (! new_node) return STACK_MALLOC;
 
     new_node -> self = value;
     new_node -> next = stack -> top;
     stack -> top = new_node;
 
-    return SUCCESS_ERROR_CODE;
+    return STACK_SUCCESS;
 }
 
 
@@ -115,9 +104,9 @@ int __t_stk_push(__t_stk *stack, __t value) {
  * @ref error_code
  */
 int __t_stk_pop(__t_stk *stack, __t *popped) {
-    if (stack == NULL) return NULL_ARG_ERROR_CODE;
+    if (stack == NULL) return STACK_NULL_ARG;
 
-    if (stack -> top == NULL) return UNDERFLOW_ERROR_CODE;
+    if (stack -> top == NULL) return STACK_UNDERFLOW;
 
     __t_node *trash = stack -> top;
     *popped = stack -> top -> self;
@@ -126,7 +115,7 @@ int __t_stk_pop(__t_stk *stack, __t *popped) {
 
     free(trash);
 
-    return SUCCESS_ERROR_CODE;
+    return STACK_SUCCESS;
 }
 
 
@@ -137,16 +126,16 @@ int __t_stk_pop(__t_stk *stack, __t *popped) {
  * @return Error Code
  * @ref error_code
  */
-int __t_stk_print_helper(__t_node *node, printer prt) {
-    if (prt == NULL) return NULL_FUNC_ERROR_CODE;
+int __t_stk_print_helper(__t_node *node, __t_printer prt) {
+    if (prt == NULL) return STACK_NULL_FUNC;
 
-    if (node == NULL) return SUCCESS_ERROR_CODE;
+    if (node == NULL) return STACK_SUCCESS;
 
     __t_stk_print_helper(node -> next, prt);
 
     prt(node -> self);
 
-    return SUCCESS_ERROR_CODE;
+    return STACK_SUCCESS;
 }
 
 
@@ -158,15 +147,15 @@ int __t_stk_print_helper(__t_node *node, printer prt) {
  * @return Error Code
  * @ref error_code
  */
-int __t_stk_print(const __t_stk * stack, printer prt) {
-    if (stack == NULL) return NULL_ARG_ERROR_CODE;
+int __t_stk_print(const __t_stk * stack, __t_printer prt) {
+    if (stack == NULL) return STACK_NULL_ARG;
     
     if (prt == NULL) prt = stack -> prt;
 
     __t_stk_print_helper(stack -> top, prt);
     printf("\n");
 
-    return SUCCESS_ERROR_CODE;
+    return STACK_SUCCESS;
 }
 
 
@@ -179,7 +168,7 @@ int __t_stk_print(const __t_stk * stack, printer prt) {
  * @ref error_code
  */
 int __t_stk_destroy(__t_stk **stack) {
-    if (stack == NULL || *stack == NULL) return NULL_ARG_ERROR_CODE;
+    if (stack == NULL || *stack == NULL) return STACK_NULL_ARG;
 
     while ((*stack) -> top != NULL) {
         __t_node *trash = (*stack) -> top;
@@ -193,5 +182,5 @@ int __t_stk_destroy(__t_stk **stack) {
 
     *stack = NULL;
 
-    return SUCCESS_ERROR_CODE;
+    return STACK_SUCCESS;
 }
