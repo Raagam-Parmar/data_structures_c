@@ -12,16 +12,23 @@ typedef int __t;
 typedef int (* __t_compare) (__t, __t);
 
 
+typedef void (* __t_printer) (__t);
+
+
 typedef struct __t_heap {
-    __t    *     data;
+    __t *        data;
     size_t       capacity;
     size_t       size;
     __t_compare  cmp;
+    __t_printer  prt;
 } __t_heap;
 
 
-__t_heap * __t_heap_create(size_t capacity, __t_compare cmp) {
-    __t_heap *heap = (__t_heap *) malloc(sizeof(heap));
+__t_heap * __t_heap_create(size_t capacity, __t_compare cmp, __t_printer prt) {
+    if (cmp == NULL || prt == NULL) return NULL;
+    if (capacity <= 0) return NULL;
+
+    __t_heap *heap = (__t_heap *) malloc(sizeof(__t_heap));
     if (heap == NULL) return NULL;
 
     __t *data = calloc(capacity, sizeof(__t));
@@ -31,6 +38,7 @@ __t_heap * __t_heap_create(size_t capacity, __t_compare cmp) {
     heap -> capacity = capacity;
     heap -> size     = 0;
     heap -> cmp      = cmp;
+    heap -> prt      = prt;
 
     return heap;
 }
@@ -49,12 +57,16 @@ int __t_right(int i) {
 }
 
 int __t_first_child_index(__t_heap *heap) {
+    if (heap == NULL) return HEAP_NULL_ARG;
+
     int cap = heap -> capacity;
     return (cap + 1) / 2;
 }
 
 
 void __t_swap(__t *array, int i, int j) {
+    if (array == NULL) return;
+
     __t temp = array[i];
     array[i] = array[j];
     array[j] = temp;
@@ -64,6 +76,9 @@ void __t_swap(__t *array, int i, int j) {
 
 
 int __t_max_heapify(__t_heap *heap, int i) {
+    if (heap == NULL) return HEAP_NULL_ARG;
+    if (i < 0 || i >= heap -> size) return HEAP_INDEX_ILL;
+
     int l = __t_left(i);
     int r = __t_right(i);
 
@@ -72,18 +87,15 @@ int __t_max_heapify(__t_heap *heap, int i) {
     __t_compare cmp = heap -> cmp;
 
     int max_i = i;
-    if ((l <= size - 1) && (cmp(data[i], data[l]) < 0)) {
+    if ((l <= size - 1) && (cmp(data[i], data[l]) < 0))
         max_i = l;
-    }
 
-    if ((r <= size - 1) && (cmp(data[max_i], data[r]) < 0)) {
+    if ((r <= size - 1) && (cmp(data[max_i], data[r]) < 0))
         max_i = r;
-    }
 
     if (max_i == i) return HEAP_SUCCESS;
 
     __t_swap(heap -> data, i, max_i);
-
     __t_max_heapify(heap, max_i);
 
     return HEAP_SUCCESS;
@@ -91,6 +103,8 @@ int __t_max_heapify(__t_heap *heap, int i) {
 
 
 int __t_build_max_heap(__t_heap *heap) {
+    if (heap == NULL) return HEAP_NULL_ARG;
+
     for (int i = __t_first_child_index(heap) - 1; i >= 0; i--) {
         __t_max_heapify(heap, i);
     }
@@ -100,6 +114,8 @@ int __t_build_max_heap(__t_heap *heap) {
 
 
 int __t_heap_sort(__t_heap *heap) {
+    if (heap == NULL) return HEAP_NULL_ARG;
+
     __t_build_max_heap(heap);
 
     int size = heap -> size;
@@ -116,11 +132,29 @@ int __t_heap_sort(__t_heap *heap) {
 }
 
 
-int __t_print(const __t_heap *heap) {
+int __t_print(const __t_heap *heap, __t_printer prt) {
+    if (heap == NULL) return HEAP_NULL_ARG;
+
+    if (prt == NULL) prt = heap -> prt;
+
     for (int i = 0; i < heap -> size; i++) {
-        printf("%d ", heap->data[i]);
+        prt(heap->data[i]);
     }
 
     printf("\n");
+    return HEAP_SUCCESS;
+}
+
+
+int __t_heap_free(__t_heap **heap) {
+    if (heap == NULL || *heap == NULL) return HEAP_NULL_ARG;
+
+    __t *data = (*heap) -> data;
+    if (data != NULL) free(data);
+
+    free(*heap);
+
+    *heap = NULL;
+
     return HEAP_SUCCESS;
 }
