@@ -90,6 +90,7 @@ int __t_stk_push(__t_stk *stack, __t value) {
     new_node -> self = value;
     new_node -> next = stack -> top;
     stack -> top = new_node;
+    stack -> length ++;
 
     return STACK_SUCCESS;
 }
@@ -112,6 +113,7 @@ int __t_stk_pop(__t_stk *stack, __t *popped) {
     *popped = stack -> top -> self;
 
     stack -> top = stack -> top -> next;
+    stack -> length --;
 
     free(trash);
 
@@ -167,7 +169,7 @@ int __t_stk_print(const __t_stk * stack, __t_printer prt) {
  * @return Error Code
  * @ref error_code
  */
-int __t_stk_destroy(__t_stk **stack) {
+int __t_stk_free(__t_stk **stack) {
     if (stack == NULL || *stack == NULL) return STACK_NULL_ARG;
 
     while ((*stack) -> top != NULL) {
