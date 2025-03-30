@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "binary_tree_error_codes.h"
+#include "include/error_codes.h"
 
 // arg-begin
 // Anything inside this will be ignored by the Converter file.
@@ -57,11 +57,11 @@ __t_btree * __t_btree_create(__t_compare cmp, __t_printer prt, __t_m_printer mpr
 
 
 int __t_btree_insert(__t_btree *bt, __t value) {
-    if (bt == NULL) return BT_NULL_ARG;
+    if (bt == NULL) return DS_NULL_ARG;
 
     if (bt -> root == NULL) {
         __t_node *new = (__t_node *) malloc(sizeof(__t_node));
-        if (new == NULL) return BT_MALLOC;
+        if (new == NULL) return DS_MALLOC;
 
         new -> value = value;
         new -> left = NULL;
@@ -74,7 +74,7 @@ int __t_btree_insert(__t_btree *bt, __t value) {
     __t_node *traverser = bt -> root;
 
     while (1) {
-        if (value == traverser -> value) return BT_SUCCESS;
+        if (value == traverser -> value) return DS_SUCCESS;
 
         if (value < traverser -> value) {
             if (traverser -> left != NULL) {
@@ -83,7 +83,7 @@ int __t_btree_insert(__t_btree *bt, __t value) {
             }
 
             __t_node *new = (__t_node *) malloc(sizeof(__t_node));
-            if (new == NULL) return BT_MALLOC;
+            if (new == NULL) return DS_MALLOC;
 
             new -> value = value;
             new -> left = NULL;
@@ -91,7 +91,7 @@ int __t_btree_insert(__t_btree *bt, __t value) {
 
             traverser -> left = new;
 
-            return BT_SUCCESS;
+            return DS_SUCCESS;
         }
 
         if (value > traverser -> value) {
@@ -101,7 +101,7 @@ int __t_btree_insert(__t_btree *bt, __t value) {
             }
 
             __t_node *new = (__t_node *) malloc(sizeof(__t_node));
-            if (new == NULL) return BT_MALLOC;
+            if (new == NULL) return DS_MALLOC;
 
             new -> value = value;
             new -> left = NULL;
@@ -109,11 +109,11 @@ int __t_btree_insert(__t_btree *bt, __t value) {
 
             traverser -> right = new;
 
-            return BT_SUCCESS;
+            return DS_SUCCESS;
         }
     }
 
-    return BT_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -151,35 +151,35 @@ void __t_btree_postfix_helper(__t_node *node, __t_printer prt) {
 
 
 int __t_btree_infix(__t_btree *bt, __t_printer prt) {
-    if (bt == NULL) return BT_NULL_ARG;
+    if (bt == NULL) return DS_NULL_ARG;
     if (prt == NULL) prt = bt -> prt;
 
     __t_btree_infix_helper(bt -> root, prt);
     printf("\n");
 
-    return BT_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
 int __t_btree_prefix(__t_btree *bt, __t_printer prt) {
-    if (bt == NULL) return BT_NULL_ARG;
+    if (bt == NULL) return DS_NULL_ARG;
     if (prt == NULL) prt = bt -> prt;
 
     __t_btree_prefix_helper(bt -> root, prt);
     printf("\n");
 
-    return BT_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
 int __t_btree_postfix(__t_btree *bt, __t_printer prt) {
-    if (bt == NULL) return BT_NULL_ARG;
+    if (bt == NULL) return DS_NULL_ARG;
     if (prt == NULL) prt = bt -> prt;
 
     __t_btree_postfix_helper(bt -> root, prt);
     printf("\n");
 
-    return BT_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -195,7 +195,7 @@ int __t_btree_height(__t_node *node) {
 }
 
 int __t_btree_min(__t_btree *bt, __t *min) {
-    if (bt == NULL) return BT_NULL_ARG;
+    if (bt == NULL) return DS_NULL_ARG;
 
     __t_node *traverser = bt -> root;
     while (1) {
@@ -207,7 +207,7 @@ int __t_btree_min(__t_btree *bt, __t *min) {
         traverser = traverser -> left;
     }
 
-    return BT_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -222,13 +222,13 @@ int __t_btree_min_helper(__t_node *node, __t *min) {
         traverser = traverser -> left;
     }
 
-    return BT_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
 
 int __t_btree_max(__t_btree *bt, __t *min) {
-    if (bt == NULL) return BT_NULL_ARG;
+    if (bt == NULL) return DS_NULL_ARG;
 
     __t_node *traverser = bt -> root;
     while (1) {
@@ -240,7 +240,7 @@ int __t_btree_max(__t_btree *bt, __t *min) {
         traverser = traverser -> right;
     }
 
-    return BT_SUCCESS;
+    return DS_SUCCESS;
 }
 
 int __t_btree_max_helper(__t_node *node, __t *min) {
@@ -254,7 +254,7 @@ int __t_btree_max_helper(__t_node *node, __t *min) {
         traverser = traverser -> right;
     }
 
-    return BT_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -265,11 +265,11 @@ int __t_btree_pred_helper(__t_node *node, __t value, __t *pred) {
         __t left_max;
         int ec = __t_btree_max_helper(node -> left, &left_max);
         
-        if (ec == BT_NULL_ARG)
+        if (ec == DS_NULL_ARG)
             return BT_PRED_SUCC;
         
         *pred = left_max;
-        return BT_SUCCESS;
+        return DS_SUCCESS;
     }
 
     if (value < node -> value) {
@@ -282,11 +282,11 @@ int __t_btree_pred_helper(__t_node *node, __t value, __t *pred) {
             *pred = node -> value;
         }
 
-        return BT_SUCCESS;
+        return DS_SUCCESS;
     }
 }
 
 
 int __t_btree_pred(__t_btree *bt, __t value, __t *pred) {
-    if (bt == NULL) return BT_NULL_ARG;
+    if (bt == NULL) return DS_NULL_ARG;
 }

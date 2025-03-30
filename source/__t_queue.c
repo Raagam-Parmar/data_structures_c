@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "queue_error_codes.h"
+#include "include/error_codes.h"
 
 // arg-begin
 // Anything inside this will be ignored by the Converter file.
@@ -69,11 +69,11 @@ __t_q * __t_q_create(__t_printer prt) {
  * @ref error_code
  */
 int __t_q_enq(__t_q *queue, __t value) {
-    if (queue == NULL) return QUEUE_NULL_ARG;
+    if (queue == NULL) return DS_NULL_ARG;
 
     __t_node *new_node = (__t_node *) malloc(sizeof(__t_node));
 
-    if (! new_node) return QUEUE_MALLOC;
+    if (! new_node) return DS_MALLOC;
 
     new_node -> self = value;
     new_node -> next = NULL;
@@ -88,7 +88,7 @@ int __t_q_enq(__t_q *queue, __t value) {
         queue -> head = new_node;
     }
 
-    return QUEUE_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -101,9 +101,9 @@ int __t_q_enq(__t_q *queue, __t value) {
  * @ref error_code
  */
 int __t_q_deq(__t_q *queue, __t *dequeued) {
-    if (queue == NULL) return QUEUE_NULL_ARG;
+    if (queue == NULL) return DS_NULL_ARG;
 
-    if (queue -> tail == NULL) return QUEUE_UNDERFLOW;
+    if (queue -> tail == NULL) return Q_UNDERFLOW;
 
     __t_node *remove_node = queue -> tail;
     *dequeued = queue -> tail -> self;
@@ -114,7 +114,7 @@ int __t_q_deq(__t_q *queue, __t *dequeued) {
 
     free(remove_node);
 
-    return QUEUE_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -127,7 +127,7 @@ int __t_q_deq(__t_q *queue, __t *dequeued) {
  * @ref error_code
  */
 int __t_q_print(const __t_q *queue, __t_printer prt) {
-    if (queue == NULL) return QUEUE_NULL_ARG;
+    if (queue == NULL) return DS_NULL_ARG;
     
     if (prt == NULL) prt = queue -> prt;
 
@@ -141,7 +141,7 @@ int __t_q_print(const __t_q *queue, __t_printer prt) {
     }
     printf("\n");
     
-    return QUEUE_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -154,7 +154,7 @@ int __t_q_print(const __t_q *queue, __t_printer prt) {
  * @ref error_code
  */
 int __t_q_free(__t_q **queue) {
-    if (queue == NULL || *queue == NULL) return QUEUE_NULL_ARG;
+    if (queue == NULL || *queue == NULL) return DS_NULL_ARG;
 
     while ((*queue) -> tail != NULL) {
         __t_node *trash = (*queue) -> tail;
@@ -167,5 +167,5 @@ int __t_q_free(__t_q **queue) {
 
     *queue = NULL;
 
-    return QUEUE_SUCCESS;
+    return DS_SUCCESS;
 }

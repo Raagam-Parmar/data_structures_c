@@ -1,41 +1,43 @@
-.PHONY: all linked_list stack queue queue_linked_list priority_queue
+# source directory		DS implementations
+S=source
+# include directory		General headers and error code headers
+I=include
+# tools directory    	Contains all tools for macro conversion
+T=scripts
+# build directory		The output of the build
+B=build
+# generic builds		The output of generic-type builds inside Build directory
+G=generic
+# void builds			The output of void-type builds inside Build directory
+V=void
 
-all: linked_list stack queue queue_linked_list priority_queue
+OBJS = \
+	binary_tree \
+	heap \
+	linked_list \
+	priority_queue \
+	queue \
+	stack \
 
-clean: clean_linked_list clean_stack clean_queue clean_queue_linked_list clean_priority_queue
+.PHONY: all-g all-v all
 
+all: all-g all-v
 
-linked_list:
-	python3 converter.py linked_list/int_linked_list.h 
+all-g:
+	for obj in $(OBJS); do \
+		python3 $T/convert.py -s "$(S)/__t_$$obj.c" -o "$(B)/$(G)/__t_$$obj.h" -t generic ; \
+	done
 
-clean_linked_list:
-	rm -f linked_list/linked_list.h
+all-v:
+	for obj in $(OBJS); do \
+		python3 $T/convert.py -s "$(S)/__t_$$obj.c" -o "$(B)/$(V)/$$obj.c" -t void ; \
+	done
 
+clean:
+	rm -fr "$(B)"
 
-stack:
-	python3 converter.py stack/int_stack.h
+clean-g:
+	rm -fr "$(B)/$(G)"
 
-clean_stack:
-	rm -f stack/stack.h
-
-
-queue:
-	python3 converter.py queue/int_queue.h
-
-clean_queue:
-	rm -f queue/queue.h
-
-
-queue_linked_list:
-	python3 converter.py queue/int_queue_linked_list.h
-
-clean_queue_linked_list:
-	rm -f queue/queue_linked_list.h
-
-
-priority_queue:
-	python3 converter.py priority_queue/int_priority_queue.h
-
-clean_priority_queue:
-	rm -f priority_queue/priority_queue.h
-	
+clean-v:
+	rm -fr "$(B)/$(V)"

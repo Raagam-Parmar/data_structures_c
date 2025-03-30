@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 
+#include "include/error_codes.h"
 
 int sort_counting(int src[], int dest[], size_t size) {
     int min_i = 0, max_i = 0;

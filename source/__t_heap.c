@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "heap_error_codes.h"
+#include "include/error_codes.h"
 
 // arg-begin
 // Anything inside this will be ignored by the Converter file.
@@ -57,7 +57,7 @@ int __t_right(int i) {
 }
 
 int __t_first_child_index(__t_heap *heap) {
-    if (heap == NULL) return HEAP_NULL_ARG;
+    if (heap == NULL) return DS_NULL_ARG;
 
     int cap = heap -> capacity;
     return (cap + 1) / 2;
@@ -76,8 +76,8 @@ void __t_swap(__t *array, int i, int j) {
 
 
 int __t_max_heapify(__t_heap *heap, int i) {
-    if (heap == NULL) return HEAP_NULL_ARG;
-    if (i < 0 || i >= heap -> size) return HEAP_INDEX_ILL;
+    if (heap == NULL) return DS_NULL_ARG;
+    if (i < 0 || i >= heap -> size) return HEAP_ILL_INDEX;
 
     int l = __t_left(i);
     int r = __t_right(i);
@@ -93,28 +93,28 @@ int __t_max_heapify(__t_heap *heap, int i) {
     if ((r <= size - 1) && (cmp(data[max_i], data[r]) < 0))
         max_i = r;
 
-    if (max_i == i) return HEAP_SUCCESS;
+    if (max_i == i) return DS_SUCCESS;
 
     __t_swap(heap -> data, i, max_i);
     __t_max_heapify(heap, max_i);
 
-    return HEAP_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
 int __t_build_max_heap(__t_heap *heap) {
-    if (heap == NULL) return HEAP_NULL_ARG;
+    if (heap == NULL) return DS_NULL_ARG;
 
     for (int i = __t_first_child_index(heap) - 1; i >= 0; i--) {
         __t_max_heapify(heap, i);
     }
 
-    return HEAP_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
 int __t_heap_sort(__t_heap *heap) {
-    if (heap == NULL) return HEAP_NULL_ARG;
+    if (heap == NULL) return DS_NULL_ARG;
 
     __t_build_max_heap(heap);
 
@@ -128,12 +128,12 @@ int __t_heap_sort(__t_heap *heap) {
 
     heap -> size = size;
 
-    return HEAP_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
 int __t_print(const __t_heap *heap, __t_printer prt) {
-    if (heap == NULL) return HEAP_NULL_ARG;
+    if (heap == NULL) return DS_NULL_ARG;
 
     if (prt == NULL) prt = heap -> prt;
 
@@ -142,12 +142,12 @@ int __t_print(const __t_heap *heap, __t_printer prt) {
     }
 
     printf("\n");
-    return HEAP_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
 int __t_heap_free(__t_heap **heap) {
-    if (heap == NULL || *heap == NULL) return HEAP_NULL_ARG;
+    if (heap == NULL || *heap == NULL) return DS_NULL_ARG;
 
     __t *data = (*heap) -> data;
     if (data != NULL) free(data);
@@ -156,5 +156,5 @@ int __t_heap_free(__t_heap **heap) {
 
     *heap = NULL;
 
-    return HEAP_SUCCESS;
+    return DS_SUCCESS;
 }

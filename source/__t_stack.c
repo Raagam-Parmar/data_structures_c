@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "stack_error_codes.h"
+#include "include/error_codes.h"
 
 // arg-begin
 // Anything inside this will be ignored by the Converter file.
@@ -66,7 +66,7 @@ __t_stk * __t_stk_create(__t_printer prt) {
  * @ref error_code
  */
 size_t __t_stack_size(const __t_stk * stack) {
-    if (stack == NULL) return STACK_NULL_ARG;
+    if (stack == NULL) return DS_NULL_ARG;
 
     return stack -> length;
 }
@@ -81,18 +81,18 @@ size_t __t_stack_size(const __t_stk * stack) {
  * @ref error_code
  */
 int __t_stk_push(__t_stk *stack, __t value) {
-    if (stack == NULL) return STACK_NULL_ARG;
+    if (stack == NULL) return DS_NULL_ARG;
 
     __t_node *new_node = (__t_node *) malloc(sizeof(__t_node));
 
-    if (! new_node) return STACK_MALLOC;
+    if (! new_node) return DS_MALLOC;
 
     new_node -> self = value;
     new_node -> next = stack -> top;
     stack -> top = new_node;
     stack -> length ++;
 
-    return STACK_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -105,9 +105,9 @@ int __t_stk_push(__t_stk *stack, __t value) {
  * @ref error_code
  */
 int __t_stk_pop(__t_stk *stack, __t *popped) {
-    if (stack == NULL) return STACK_NULL_ARG;
+    if (stack == NULL) return DS_NULL_ARG;
 
-    if (stack -> top == NULL) return STACK_UNDERFLOW;
+    if (stack -> top == NULL) return STK_UNDERFLOW;
 
     __t_node *trash = stack -> top;
     *popped = stack -> top -> self;
@@ -117,7 +117,7 @@ int __t_stk_pop(__t_stk *stack, __t *popped) {
 
     free(trash);
 
-    return STACK_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -129,15 +129,15 @@ int __t_stk_pop(__t_stk *stack, __t *popped) {
  * @ref error_code
  */
 int __t_stk_print_helper(__t_node *node, __t_printer prt) {
-    if (prt == NULL) return STACK_NULL_FUNC;
+    if (prt == NULL) return DS_NULL_ARG;
 
-    if (node == NULL) return STACK_SUCCESS;
+    if (node == NULL) return DS_SUCCESS;
 
     __t_stk_print_helper(node -> next, prt);
 
     prt(node -> self);
 
-    return STACK_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -150,14 +150,14 @@ int __t_stk_print_helper(__t_node *node, __t_printer prt) {
  * @ref error_code
  */
 int __t_stk_print(const __t_stk * stack, __t_printer prt) {
-    if (stack == NULL) return STACK_NULL_ARG;
+    if (stack == NULL) return DS_NULL_ARG;
     
     if (prt == NULL) prt = stack -> prt;
 
     __t_stk_print_helper(stack -> top, prt);
     printf("\n");
 
-    return STACK_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -170,7 +170,7 @@ int __t_stk_print(const __t_stk * stack, __t_printer prt) {
  * @ref error_code
  */
 int __t_stk_free(__t_stk **stack) {
-    if (stack == NULL || *stack == NULL) return STACK_NULL_ARG;
+    if (stack == NULL || *stack == NULL) return DS_NULL_ARG;
 
     while ((*stack) -> top != NULL) {
         __t_node *trash = (*stack) -> top;
@@ -184,5 +184,5 @@ int __t_stk_free(__t_stk **stack) {
 
     *stack = NULL;
 
-    return STACK_SUCCESS;
+    return DS_SUCCESS;
 }

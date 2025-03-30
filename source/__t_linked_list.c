@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "ll_error_codes.h"
+#include "include/error_codes.h"
 
 // arg-begin
 // Anything inside this will be ignored by the Converter file.
@@ -66,7 +66,7 @@ __t_ll * __t_ll_create(__t_printer prt) {
  * @ref error_code
  */
 size_t __t_ll_size(const __t_ll * list) {
-    if (list == NULL) return LL_NULL_ARG;
+    if (list == NULL) return DS_NULL_ARG;
     
     return list -> length;
 }
@@ -81,7 +81,7 @@ size_t __t_ll_size(const __t_ll * list) {
  * @ref error_code
  */
 int __t_ll_print(const __t_ll * list, __t_printer prt) {
-    if (list -> head == NULL) return LL_NULL_ARG;
+    if (list -> head == NULL) return DS_NULL_ARG;
 
     if (prt == NULL) prt = list -> prt;
 
@@ -93,7 +93,7 @@ int __t_ll_print(const __t_ll * list, __t_printer prt) {
     }
     printf("\n");
 
-    return LL_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -106,7 +106,7 @@ int __t_ll_print(const __t_ll * list, __t_printer prt) {
  * @ref error_code
  */
 int __t_ll_free(__t_ll **list) {
-    if (list == NULL || *list == NULL) return LL_SUCCESS;
+    if (list == NULL || *list == NULL) return DS_SUCCESS;
 
     while ((*list) -> head != NULL) {
         __t_node *trash = (*list) -> head;
@@ -120,5 +120,5 @@ int __t_ll_free(__t_ll **list) {
 
     *list = NULL;
 
-    return LL_SUCCESS;
+    return DS_SUCCESS;
 }

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "pq_error_codes.h"
+#include "include/error_codes.h"
 
 // arg-begin
 // Anything inside this will be ignored by the Converter file.
@@ -76,7 +76,7 @@ __t_pq * __t_pq_create(__t_compare cmp, __t_printer prt) {
  * @ref error_code
  */
 int __t_pq_empty(const __t_pq * queue) {
-    if (queue == NULL) return PQ_NULL_ARG;
+    if (queue == NULL) return DS_NULL_ARG;
     return (queue -> length == 0);
 }
 
@@ -90,11 +90,11 @@ int __t_pq_empty(const __t_pq * queue) {
  * @ref error_code
  */
 int __t_pq_enq(__t_pq * queue, __t value) { 
-    if (queue == NULL) return PQ_NULL_ARG; 
+    if (queue == NULL) return DS_NULL_ARG; 
 
     __t_node *new_node = (__t_node *) malloc(sizeof(__t_node)); 
 
-    if (! new_node) return PQ_MALLOC; 
+    if (! new_node) return DS_MALLOC; 
 
     new_node -> self = value; 
     new_node -> next = NULL; 
@@ -103,7 +103,7 @@ int __t_pq_enq(__t_pq * queue, __t value) {
         queue -> head = new_node; 
         queue -> length ++;
 
-        return PQ_SUCCESS; 
+        return DS_SUCCESS; 
     } 
 
     if (queue -> cmp(value, queue -> head -> self) < 0) { 
@@ -111,14 +111,14 @@ int __t_pq_enq(__t_pq * queue, __t value) {
         queue -> head = new_node; 
         queue -> length ++;
 
-        return PQ_SUCCESS; 
+        return DS_SUCCESS; 
     } 
 
     if (queue -> head -> next == NULL) { 
         queue -> head -> next = new_node;
         queue -> length ++;
  
-        return PQ_SUCCESS; 
+        return DS_SUCCESS; 
     } 
 
     __t_node *traverser   = queue -> head; 
@@ -140,7 +140,7 @@ int __t_pq_enq(__t_pq * queue, __t value) {
     new_node -> next = traverser_n; 
     queue -> length ++;
 
-    return PQ_SUCCESS; 
+    return DS_SUCCESS; 
 } 
 
 
@@ -153,7 +153,7 @@ int __t_pq_enq(__t_pq * queue, __t value) {
  * @ref error_code
  */
 int __t_pq_deq(__t_pq *queue, __t *dequeued) { 
-    if (queue == NULL)         return PQ_NULL_ARG; 
+    if (queue == NULL)         return DS_NULL_ARG; 
     if (queue -> head == NULL) return PQ_UNDERFLOW; 
 
     *dequeued = queue -> head -> self; 
@@ -165,7 +165,7 @@ int __t_pq_deq(__t_pq *queue, __t *dequeued) {
 
     free(trash);
 
-    return PQ_SUCCESS; 
+    return DS_SUCCESS; 
 } 
 
 
@@ -178,12 +178,12 @@ int __t_pq_deq(__t_pq *queue, __t *dequeued) {
  * @ref error_code
  */
 int __t_pq_peek(const __t_pq * queue, __t *peek) {
-    if (queue == NULL || peek == NULL) return PQ_NULL_ARG;
+    if (queue == NULL || peek == NULL) return DS_NULL_ARG;
     if (queue -> head == NULL)         return PQ_UNDERFLOW;
 
     *peek = queue -> head -> self;
 
-    return PQ_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -196,8 +196,8 @@ int __t_pq_peek(const __t_pq * queue, __t *peek) {
  * @ref error_code
  */
 int __t_pq_map(__t_pq *queue, __t (* map) (__t)) {
-    if (queue == NULL) return PQ_NULL_ARG;
-    if (map == NULL)   return PQ_NULL_FUNC;
+    if (queue == NULL) return DS_NULL_ARG;
+    if (map == NULL)   return DS_NULL_FUNC;
 
     __t_node *traverser = queue -> head;
 
@@ -207,7 +207,7 @@ int __t_pq_map(__t_pq *queue, __t (* map) (__t)) {
         traverser = traverser -> next;
     }
 
-    return PQ_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -220,8 +220,8 @@ int __t_pq_map(__t_pq *queue, __t (* map) (__t)) {
  * @ref error_code
  */
 int __t_pq_mod(__t_pq * queue, void (* modify) (__t *)) {
-    if (queue == NULL)  return PQ_NULL_ARG;
-    if (modify == NULL) return PQ_NULL_FUNC;
+    if (queue == NULL)  return DS_NULL_ARG;
+    if (modify == NULL) return DS_NULL_FUNC;
 
     __t_node *traverser = queue -> head;
 
@@ -231,7 +231,7 @@ int __t_pq_mod(__t_pq * queue, void (* modify) (__t *)) {
         traverser = traverser -> next;
     }
 
-    return PQ_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -244,8 +244,8 @@ int __t_pq_mod(__t_pq * queue, void (* modify) (__t *)) {
  * @ref error_code
  */
 int __t_pq_iter(const __t_pq * queue, void (* apply) (__t)) {
-    if (queue == NULL) return PQ_NULL_ARG;
-    if (apply == NULL) return PQ_NULL_FUNC;
+    if (queue == NULL) return DS_NULL_ARG;
+    if (apply == NULL) return DS_NULL_FUNC;
 
     __t_node *traverser = queue -> head;
 
@@ -255,7 +255,7 @@ int __t_pq_iter(const __t_pq * queue, void (* apply) (__t)) {
         traverser = traverser -> next;
     }
 
-    return PQ_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -268,13 +268,13 @@ int __t_pq_iter(const __t_pq * queue, void (* apply) (__t)) {
  * @ref error_code
  */
 int __t_pq_print(const __t_pq * queue, __t_printer prt) {
-    if (queue == NULL) return PQ_NULL_ARG;
+    if (queue == NULL) return DS_NULL_ARG;
     if (prt == NULL) prt = queue -> prt;
 
     __t_pq_iter(queue, prt);
     printf("\n");
 
-    return PQ_SUCCESS;
+    return DS_SUCCESS;
 }
 
 
@@ -287,7 +287,7 @@ int __t_pq_print(const __t_pq * queue, __t_printer prt) {
  * @ref error_code
  */
 int __t_pq_free(__t_pq **queue) { 
-    if (queue == NULL || *queue == NULL) return PQ_NULL_ARG;
+    if (queue == NULL || *queue == NULL) return DS_NULL_ARG;
 
     while ((*queue) -> head != NULL) { 
         __t_node *trash = (*queue) -> head; 
@@ -300,5 +300,5 @@ int __t_pq_free(__t_pq **queue) {
 
     *queue = NULL;
 
-    return PQ_SUCCESS; 
+    return DS_SUCCESS; 
 } 
